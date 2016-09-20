@@ -6,6 +6,8 @@ function getRandomInt(min, max) {
 }
 
 function display(n) {
+  if (n == 0) return '';
+
   var c = n > 0 ? '+' : '-';
   n = Math.abs(n);
 
@@ -32,8 +34,8 @@ $(function () {
     var $first_score = $(`#${_mode} #first-player-score`);
     var $second_score = $(`#${_mode} #second-player-score`);
 
-    var player1 = $form_p1.val();
-    var player2 = $form_p2.val();
+    var player1 = $form_p1.val() || 'Joueur 1';
+    var player2 = $form_p2.val() || 'Joueur 2';
     var current;
     var other;
 
@@ -62,19 +64,20 @@ $(function () {
     var emplacement = data.emplacement[jet2];
     var avec = data.avec[jet3];
     var position = data.position[jet4];
+    var points = action.points + emplacement.points + avec.points + position.points;
 
     var selector = `#${_mode} .recap`;
-    var dom = `<p><span>${current}</span> <strong>${action.name}</strong> ${display(action.points)} <strong>${emplacement.name}</strong> ${display(emplacement.points)} de <span>${other}</span> avec <strong>${avec.name}</strong> ${display(avec.points)} dans la position <strong>${position.name}</strong> ${display(position.points)}</p>`;
+    var dom = `<p><span>${current}</span> : <strong>${action.name}</strong> ${display(action.points)} <strong>${emplacement.name}</strong> ${display(emplacement.points)} de <span>${other}</span> avec <strong>${avec.name}</strong> ${display(avec.points)} dans la position <strong>${position.name}</strong> ${display(position.points)} --- (${points})</p>`;
     $(dom).appendTo(selector).first();
 
-    $('#first-player-name').text(player1);
-    $('#second-player-name').text(player2);
+    $(`#${_mode} #first-player-name`).text(player1);
+    $(`#${_mode} #second-player-name`).text(player2);
 
     if (current == player1) {
-      var score = parseInt($first_score.text(), 10) + action.points + emplacement.points + avec.points + position.points;
+      var score = parseInt($first_score.text() || '0', 10) + points;
       $first_score.text(score);
     } else {
-      var score = parseInt($second_score.text(), 10) + action.points + emplacement.points + avec.points + position.points;
+      var score = parseInt($second_score.text() || '0', 10) + points;
       $second_score.text(score);
     }
   });
